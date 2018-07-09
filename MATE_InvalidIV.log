@@ -1,0 +1,2463 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\John\Desktop\Dempsey Master\MATE_InvalidIV.log
+  log type:  text
+ opened on:  14 Jun 2018, 15:40:26
+
+. 
+. 
+. ** This program calculates standard errors for the bounds of MATE, NATE and LATE with an Invalid IV.;
+. ** Use 1000-repetition bootstrap.;
+. ** call InvalidIV_ATEnw.ado;
+. 
+. 
+. * Specify data set to be used
+. *Desktop
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+end of do-file
+
+. ttest age_cat marriage LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr, by( d_hsged_voc )
+too many variables specified
+r(103);
+
+. ttest age_cat marriage LivToget Sep haschld, by( d_hsged_voc )
+too many variables specified
+r(103);
+
+. ttest age_cat , by( d_hsged_voc )
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    18.21183    .0845148    1.934633     18.0458    18.37786
+       1 |   1,160    18.65862    .0615713    2.097045    18.53782    18.77942
+---------+--------------------------------------------------------------------
+combined |   1,684     18.5196    .0501442    2.057745    18.42124    18.61795
+---------+--------------------------------------------------------------------
+    diff |           -.4467886     .107793               -.6582111   -.2353662
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -4.1449
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+. ttest age_cat , by( d_hsged_voc ) if female==1
+option if not allowed
+r(198);
+
+. ttest age_cat if female==1, by( d_hsged_voc )
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    18.25405    .1385101    1.883942    17.98078    18.52733
+       1 |     482    18.78216    .0950851    2.087547    18.59532    18.96899
+---------+--------------------------------------------------------------------
+combined |     667    18.63568    .0792004    2.045456    18.48017    18.79119
+---------+--------------------------------------------------------------------
+    diff |           -.5281036     .175851               -.8733936   -.1828136
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -3.0031
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0014         Pr(|T| > |t|) = 0.0028          Pr(T > t) = 0.9986
+
+. sum d_hsged_voc
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+ d_hsged_voc |      8,020    .5775561    .4939792          0          1
+
+. sum age_cat
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     age_cat |      2,247    18.91678     2.14827         16         24
+
+. ttest age if female==1, by( d_hsged_voc )
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    18.44022    .0571621    2.067341    18.32808    18.55236
+       1 |   2,093    18.88917    .0473193    2.164823    18.79638    18.98197
+---------+--------------------------------------------------------------------
+combined |   3,401    18.71651    .0366737     2.13874    18.64461    18.78841
+---------+--------------------------------------------------------------------
+    diff |           -.4489517    .0749997               -.5960008   -.3019027
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.9860
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. 
+. 
+. for `x' in age marriage LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr{
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. 
+. 
+. for x in age marriage LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr{
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age marriage LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr
+
+. 
+. for x in $list{
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age marriage LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr
+
+. 
+. for x of $list{
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age marriage LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr
+
+. 
+. for x of global list{
+invalid syntax
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age marriage LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x', by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   3,388    18.26847    .0340327    1.980926    18.20174    18.33519
+       1 |   4,632    18.73358    .0308155    2.097268    18.67317      18.794
+---------+--------------------------------------------------------------------
+combined |   8,020     18.5371    .0230211    2.061643    18.49197    18.58222
+---------+--------------------------------------------------------------------
+    diff |           -.4651186    .0463189               -.5559156   -.3743216
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t = -10.0417
+Ho: diff = 0                                     degrees of freedom =     8018
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    1.223282    .0286454    .6557234    1.167008    1.279557
+       1 |   1,160    1.178448    .0182964    .6231521    1.142551    1.214346
+---------+--------------------------------------------------------------------
+combined |   1,684    1.192399    .0154402    .6336113    1.162115    1.222683
+---------+--------------------------------------------------------------------
+    diff |            .0448342    .0333423               -.0205625    .1102309
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.3447
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9105         Pr(|T| > |t|) = 0.1789          Pr(T > t) = 0.0895
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .0591603    .0103163    .2361499    .0388939    .0794267
+       1 |   1,160     .037931    .0056112    .1911119    .0269217    .0489404
+---------+--------------------------------------------------------------------
+combined |   1,684    .0445368    .0050283    .2063458    .0346744    .0543993
+---------+--------------------------------------------------------------------
+    diff |            .0212293    .0108519               -.0000555     .042514
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.9563
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9747         Pr(|T| > |t|) = 0.0506          Pr(T > t) = 0.0253
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .0229008     .006541    .1497301    .0100509    .0357506
+       1 |   1,160    .0275862    .0048109    .1638547    .0181471    .0370253
+---------+--------------------------------------------------------------------
+combined |   1,684    .0261283    .0038883    .1595641    .0185018    .0337548
+---------+--------------------------------------------------------------------
+    diff |           -.0046854    .0084004               -.0211618    .0117909
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -0.5578
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.2885         Pr(|T| > |t|) = 0.5771          Pr(T > t) = 0.7115
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .2022901    .0175654    .4020912    .1677826    .2367976
+       1 |   1,160    .1758621    .0111826     .380867    .1539216    .1978026
+---------+--------------------------------------------------------------------
+combined |   1,684    .1840855    .0094469     .387669    .1655566    .2026145
+---------+--------------------------------------------------------------------
+    diff |             .026428    .0204009               -.0135859    .0664419
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.2954
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9023         Pr(|T| > |t|) = 0.1953          Pr(T > t) = 0.0977
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524     9.65458    .0553133    1.266179    9.545917    9.763244
+       1 |   1,160    10.43793    .0420526    1.432258    10.35542    10.52044
+---------+--------------------------------------------------------------------
+combined |   1,684    10.19418    .0348264    1.429155    10.12587    10.26249
+---------+--------------------------------------------------------------------
+    diff |           -.7833509    .0727817               -.9261031   -.6405987
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t = -10.7630
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .2671064    .0193435    .4427939    .2291058     .305107
+       1 |   1,160    .2585478    .0128585    .4379431    .2333194    .2837763
+---------+--------------------------------------------------------------------
+combined |   1,684    .2612109    .0107062    .4393445    .2402121    .2822098
+---------+--------------------------------------------------------------------
+    diff |            .0085586    .0231309               -.0368098     .053927
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.3700
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6443         Pr(|T| > |t|) = 0.7114          Pr(T > t) = 0.3557
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .3625954    .0210217    .4812088    .3212981    .4038928
+       1 |   1,159    .2648835    .0129674    .4414617    .2394414    .2903257
+---------+--------------------------------------------------------------------
+combined |   1,683     .295306     .011123    .4563158    .2734895    .3171225
+---------+--------------------------------------------------------------------
+    diff |            .0977119    .0239102                .0508151    .1446087
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   4.0866
+Ho: diff = 0                                     degrees of freedom =     1681
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 1.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 0.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524     .259542    .0191692    .4388022     .221884       .2972
+       1 |   1,160        .325    .0137579    .4685769    .2980068    .3519932
+---------+--------------------------------------------------------------------
+combined |   1,684    .3046318     .011219     .460388    .2826272    .3266364
+---------+--------------------------------------------------------------------
+    diff |            -.065458    .0241872               -.1128982   -.0180178
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.7063
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0034         Pr(|T| > |t|) = 0.0069          Pr(T > t) = 0.9966
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    4701.715    238.2628    5454.085    4233.645    5169.785
+       1 |   1,160    5088.234    140.1148     4772.14    4813.327    5363.141
+---------+--------------------------------------------------------------------
+combined |   1,684    4967.963    121.7425    4995.893    4729.181    5206.746
+---------+--------------------------------------------------------------------
+    diff |           -386.5191    262.8692               -902.1042    129.0659
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.4704
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0708         Pr(|T| > |t|) = 0.1416          Pr(T > t) = 0.9292
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x', by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   3,388    18.26847    .0340327    1.980926    18.20174    18.33519
+       1 |   4,632    18.73358    .0308155    2.097268    18.67317      18.794
+---------+--------------------------------------------------------------------
+combined |   8,020     18.5371    .0230211    2.061643    18.49197    18.58222
+---------+--------------------------------------------------------------------
+    diff |           -.4651186    .0463189               -.5559156   -.3743216
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t = -10.0417
+Ho: diff = 0                                     degrees of freedom =     8018
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   3,388    .0599174     .004078    .2373687    .0519217     .067913
+       1 |   4,632    .0556995    .0033701    .2293652    .0490925    .0623065
+---------+--------------------------------------------------------------------
+combined |   8,020    .0574813    .0025993    .2327745    .0523861    .0625765
+---------+--------------------------------------------------------------------
+    diff |            .0042179    .0052623               -.0060976    .0145334
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.8015
+Ho: diff = 0                                     degrees of freedom =     8018
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.7886         Pr(|T| > |t|) = 0.4229          Pr(T > t) = 0.2114
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .0591603    .0103163    .2361499    .0388939    .0794267
+       1 |   1,160     .037931    .0056112    .1911119    .0269217    .0489404
+---------+--------------------------------------------------------------------
+combined |   1,684    .0445368    .0050283    .2063458    .0346744    .0543993
+---------+--------------------------------------------------------------------
+    diff |            .0212293    .0108519               -.0000555     .042514
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.9563
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9747         Pr(|T| > |t|) = 0.0506          Pr(T > t) = 0.0253
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .0229008     .006541    .1497301    .0100509    .0357506
+       1 |   1,160    .0275862    .0048109    .1638547    .0181471    .0370253
+---------+--------------------------------------------------------------------
+combined |   1,684    .0261283    .0038883    .1595641    .0185018    .0337548
+---------+--------------------------------------------------------------------
+    diff |           -.0046854    .0084004               -.0211618    .0117909
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -0.5578
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.2885         Pr(|T| > |t|) = 0.5771          Pr(T > t) = 0.7115
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .2022901    .0175654    .4020912    .1677826    .2367976
+       1 |   1,160    .1758621    .0111826     .380867    .1539216    .1978026
+---------+--------------------------------------------------------------------
+combined |   1,684    .1840855    .0094469     .387669    .1655566    .2026145
+---------+--------------------------------------------------------------------
+    diff |             .026428    .0204009               -.0135859    .0664419
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.2954
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9023         Pr(|T| > |t|) = 0.1953          Pr(T > t) = 0.0977
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524     9.65458    .0553133    1.266179    9.545917    9.763244
+       1 |   1,160    10.43793    .0420526    1.432258    10.35542    10.52044
+---------+--------------------------------------------------------------------
+combined |   1,684    10.19418    .0348264    1.429155    10.12587    10.26249
+---------+--------------------------------------------------------------------
+    diff |           -.7833509    .0727817               -.9261031   -.6405987
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t = -10.7630
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .2671064    .0193435    .4427939    .2291058     .305107
+       1 |   1,160    .2585478    .0128585    .4379431    .2333194    .2837763
+---------+--------------------------------------------------------------------
+combined |   1,684    .2612109    .0107062    .4393445    .2402121    .2822098
+---------+--------------------------------------------------------------------
+    diff |            .0085586    .0231309               -.0368098     .053927
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.3700
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6443         Pr(|T| > |t|) = 0.7114          Pr(T > t) = 0.3557
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    .3625954    .0210217    .4812088    .3212981    .4038928
+       1 |   1,159    .2648835    .0129674    .4414617    .2394414    .2903257
+---------+--------------------------------------------------------------------
+combined |   1,683     .295306     .011123    .4563158    .2734895    .3171225
+---------+--------------------------------------------------------------------
+    diff |            .0977119    .0239102                .0508151    .1446087
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   4.0866
+Ho: diff = 0                                     degrees of freedom =     1681
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 1.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 0.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524     .259542    .0191692    .4388022     .221884       .2972
+       1 |   1,160        .325    .0137579    .4685769    .2980068    .3519932
+---------+--------------------------------------------------------------------
+combined |   1,684    .3046318     .011219     .460388    .2826272    .3266364
+---------+--------------------------------------------------------------------
+    diff |            -.065458    .0241872               -.1128982   -.0180178
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.7063
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0034         Pr(|T| > |t|) = 0.0069          Pr(T > t) = 0.9966
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     524    4701.715    238.2628    5454.085    4233.645    5169.785
+       1 |   1,160    5088.234    140.1148     4772.14    4813.327    5363.141
+---------+--------------------------------------------------------------------
+combined |   1,684    4967.963    121.7425    4995.893    4729.181    5206.746
+---------+--------------------------------------------------------------------
+    diff |           -386.5191    262.8692               -902.1042    129.0659
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.4704
+Ho: diff = 0                                     degrees of freedom =     1682
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0708         Pr(|T| > |t|) = 0.1416          Pr(T > t) = 0.9292
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar LivToget Sep haschld hgc evarrst1 evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    18.44022    .0571621    2.067341    18.32808    18.55236
+       1 |   2,093    18.88917    .0473193    2.164823    18.79638    18.98197
+---------+--------------------------------------------------------------------
+combined |   3,401    18.71651    .0366737     2.13874    18.64461    18.78841
+---------+--------------------------------------------------------------------
+    diff |           -.4489517    .0749997               -.5960008   -.3019027
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.9860
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    .0856269    .0077398    .2799194    .0704431    .1008107
+       1 |   2,093    .0664118     .005444    .2490601    .0557356    .0770881
+---------+--------------------------------------------------------------------
+combined |   3,401    .0738018    .0044838    .2614866    .0650106     .082593
+---------+--------------------------------------------------------------------
+    diff |            .0192151    .0092119                .0011536    .0372765
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.0859
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9815         Pr(|T| > |t|) = 0.0371          Pr(T > t) = 0.0185
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .0756757    .0194976    .2651962     .037208    .1141433
+       1 |     482    .0414938    .0090932    .1996365    .0236265    .0593611
+---------+--------------------------------------------------------------------
+combined |     667    .0509745    .0085227    .2201108    .0342399    .0677092
+---------+--------------------------------------------------------------------
+    diff |            .0341819     .019005               -.0031351    .0714989
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.7986
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9637         Pr(|T| > |t|) = 0.0725          Pr(T > t) = 0.0363
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .0540541    .0166701     .226738    .0211649    .0869432
+       1 |     482    .0456432    .0095164    .2089268    .0269444    .0643419
+---------+--------------------------------------------------------------------
+combined |     667     .047976    .0082813    .2138759    .0317154    .0642366
+---------+--------------------------------------------------------------------
+    diff |            .0084109    .0185086               -.0279315    .0447533
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.4544
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6752         Pr(|T| > |t|) = 0.6497          Pr(T > t) = 0.3248
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .3459459    .0350673    .4769665    .2767603    .4151316
+       1 |     482    .2821577    .0205205    .4505173    .2418368    .3224786
+---------+--------------------------------------------------------------------
+combined |     667    .2998501    .0177546     .458536    .2649884    .3347118
+---------+--------------------------------------------------------------------
+    diff |            .0637883    .0396103                -.013988    .1415646
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.6104
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9461         Pr(|T| > |t|) = 0.1078          Pr(T > t) = 0.0539
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    9.724324    .0911702    1.240049    9.544451    9.904198
+       1 |     482    10.58299     .069727     1.53082    10.44598    10.71999
+---------+--------------------------------------------------------------------
+combined |     667    10.34483    .0582774    1.505091     10.2304    10.45926
+---------+--------------------------------------------------------------------
+    diff |           -.8586632    .1259421               -1.105955   -.6113712
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -6.8179
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .1729077    .0278726    .3791082    .1179167    .2278987
+       1 |     482    .2011947    .0182763    .4012479    .1652834     .237106
+---------+--------------------------------------------------------------------
+combined |     667     .193349    .0153004    .3951526    .1633062    .2233918
+---------+--------------------------------------------------------------------
+    diff |            -.028287    .0341839               -.0954083    .0388343
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -0.8275
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.2041         Pr(|T| > |t|) = 0.4083          Pr(T > t) = 0.7959
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .1837838    .0285527    .3883588     .127451    .2401166
+       1 |     482    .1514523    .0163457    .3588616    .1193345    .1835701
+---------+--------------------------------------------------------------------
+combined |     667    .1604198    .0142208    .3672704    .1324969    .1883427
+---------+--------------------------------------------------------------------
+    diff |            .0323315    .0317634               -.0300372    .0947002
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.0179
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.8454         Pr(|T| > |t|) = 0.3091          Pr(T > t) = 0.1546
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .2432432    .0316293     .430205    .1808405     .305646
+       1 |     482    .3423237    .0216348    .4749802    .2998133     .384834
+---------+--------------------------------------------------------------------
+combined |     667    .3148426    .0179972    .4648017    .2795045    .3501807
+---------+--------------------------------------------------------------------
+    diff |           -.0990804    .0400459                -.177712   -.0204488
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.4742
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0068         Pr(|T| > |t|) = 0.0136          Pr(T > t) = 0.9932
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    3742.936    378.3674    5146.354    2996.439    4489.432
+       1 |     482    4587.484     190.419    4180.553    4213.328     4961.64
+---------+--------------------------------------------------------------------
+combined |     667    4353.239    173.5192    4481.366    4012.528    4693.949
+---------+--------------------------------------------------------------------
+    diff |            -844.548    386.4885               -1603.433   -85.66329
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.1852
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0146         Pr(|T| > |t|) = 0.0292          Pr(T > t) = 0.9854
+
+. 
+end of do-file
+
+. sum black
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+       black |      8,020     .507606    .4999733          0          1
+
+. sum race_eth=2
+invalid syntax
+r(198);
+
+. sum race_eth==2
+== invalid name
+r(198);
+
+. sum race_eth if race_eth==2
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    race_eth |        946           2           0          2          2
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar black white hispanic haschld hgc evarrst1 evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    18.44022    .0571621    2.067341    18.32808    18.55236
+       1 |   2,093    18.88917    .0473193    2.164823    18.79638    18.98197
+---------+--------------------------------------------------------------------
+combined |   3,401    18.71651    .0366737     2.13874    18.64461    18.78841
+---------+--------------------------------------------------------------------
+    diff |           -.4489517    .0749997               -.5960008   -.3019027
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.9860
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    .0856269    .0077398    .2799194    .0704431    .1008107
+       1 |   2,093    .0664118     .005444    .2490601    .0557356    .0770881
+---------+--------------------------------------------------------------------
+combined |   3,401    .0738018    .0044838    .2614866    .0650106     .082593
+---------+--------------------------------------------------------------------
+    diff |            .0192151    .0092119                .0011536    .0372765
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.0859
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9815         Pr(|T| > |t|) = 0.0371          Pr(T > t) = 0.0185
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    .5642202    .0137158    .4960483    .5373129    .5911275
+       1 |   2,093    .5408505    .0108952    .4984475    .5194839     .562217
+---------+--------------------------------------------------------------------
+combined |   3,401    .5498383    .0085322    .4975831    .5331095    .5665671
+---------+--------------------------------------------------------------------
+    diff |            .0233697     .017536               -.0110125    .0577519
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.3327
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9086         Pr(|T| > |t|) = 0.1827          Pr(T > t) = 0.0914
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    .1674312    .0103274    .3735032    .1471711    .1876913
+       1 |   2,093    .2078356    .0088713    .4058555    .1904382    .2252331
+---------+--------------------------------------------------------------------
+combined |   3,401    .1922964    .0067588    .3941626    .1790446    .2055482
+---------+--------------------------------------------------------------------
+    diff |           -.0404044    .0138776               -.0676137   -.0131952
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.9115
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0018         Pr(|T| > |t|) = 0.0036          Pr(T > t) = 0.9982
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |   1,308    .2025994    .0111178    .4020901    .1807887    .2244101
+       1 |   2,093    .1892021    .0085632    .3917627    .1724087    .2059955
+---------+--------------------------------------------------------------------
+combined |   3,401    .1943546    .0067863    .3957612    .1810491    .2076601
+---------+--------------------------------------------------------------------
+    diff |            .0133973    .0139493               -.0139526    .0407472
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.9604
+Ho: diff = 0                                     degrees of freedom =     3399
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.8315         Pr(|T| > |t|) = 0.3369          Pr(T > t) = 0.1685
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .3459459    .0350673    .4769665    .2767603    .4151316
+       1 |     482    .2821577    .0205205    .4505173    .2418368    .3224786
+---------+--------------------------------------------------------------------
+combined |     667    .2998501    .0177546     .458536    .2649884    .3347118
+---------+--------------------------------------------------------------------
+    diff |            .0637883    .0396103                -.013988    .1415646
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.6104
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9461         Pr(|T| > |t|) = 0.1078          Pr(T > t) = 0.0539
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    9.724324    .0911702    1.240049    9.544451    9.904198
+       1 |     482    10.58299     .069727     1.53082    10.44598    10.71999
+---------+--------------------------------------------------------------------
+combined |     667    10.34483    .0582774    1.505091     10.2304    10.45926
+---------+--------------------------------------------------------------------
+    diff |           -.8586632    .1259421               -1.105955   -.6113712
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -6.8179
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .1729077    .0278726    .3791082    .1179167    .2278987
+       1 |     482    .2011947    .0182763    .4012479    .1652834     .237106
+---------+--------------------------------------------------------------------
+combined |     667     .193349    .0153004    .3951526    .1633062    .2233918
+---------+--------------------------------------------------------------------
+    diff |            -.028287    .0341839               -.0954083    .0388343
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -0.8275
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.2041         Pr(|T| > |t|) = 0.4083          Pr(T > t) = 0.7959
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .1837838    .0285527    .3883588     .127451    .2401166
+       1 |     482    .1514523    .0163457    .3588616    .1193345    .1835701
+---------+--------------------------------------------------------------------
+combined |     667    .1604198    .0142208    .3672704    .1324969    .1883427
+---------+--------------------------------------------------------------------
+    diff |            .0323315    .0317634               -.0300372    .0947002
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.0179
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.8454         Pr(|T| > |t|) = 0.3091          Pr(T > t) = 0.1546
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    .2432432    .0316293     .430205    .1808405     .305646
+       1 |     482    .3423237    .0216348    .4749802    .2998133     .384834
+---------+--------------------------------------------------------------------
+combined |     667    .3148426    .0179972    .4648017    .2795045    .3501807
+---------+--------------------------------------------------------------------
+    diff |           -.0990804    .0400459                -.177712   -.0204488
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.4742
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0068         Pr(|T| > |t|) = 0.0136          Pr(T > t) = 0.9932
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     185    3742.936    378.3674    5146.354    2996.439    4489.432
+       1 |     482    4587.484     190.419    4180.553    4213.328     4961.64
+---------+--------------------------------------------------------------------
+combined |     667    4353.239    173.5192    4481.366    4012.528    4693.949
+---------+--------------------------------------------------------------------
+    diff |            -844.548    386.4885               -1603.433   -85.66329
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.1852
+Ho: diff = 0                                     degrees of freedom =      665
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0146         Pr(|T| > |t|) = 0.0292          Pr(T > t) = 0.9854
+
+. 
+end of do-file
+
+. sum haschld if frmale==1
+frmale not found
+r(111);
+
+. sum haschld if female==1
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     haschld |        944    .2849576    .4516335          0          1
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar black white hispanic haschld hgc evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1 & black==1, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     738    18.45703    .0784014    2.129863    18.30312    18.61095
+       1 |   1,132    18.97837    .0660807    2.223299    18.84872    19.10803
+---------+--------------------------------------------------------------------
+combined |   1,870    18.77263    .0509009    2.201135     18.6728    18.87245
+---------+--------------------------------------------------------------------
+    diff |            -.521342    .1034667               -.7242646   -.3184195
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.0387
+Ho: diff = 0                                     degrees of freedom =     1868
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     738    .0460705    .0077221    .2097799    .0309105    .0612304
+       1 |   1,132    .0432862    .0060511    .2035906    .0314136    .0551589
+---------+--------------------------------------------------------------------
+combined |   1,870     .044385    .0047638    .2060041    .0350421     .053728
+---------+--------------------------------------------------------------------
+    diff |            .0027842    .0097488               -.0163355     .021904
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.2856
+Ho: diff = 0                                     degrees of freedom =     1868
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6124         Pr(|T| > |t|) = 0.7752          Pr(T > t) = 0.3876
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     738           1           0           0           1           1
+       1 |   1,132           1           0           0           1           1
+---------+--------------------------------------------------------------------
+combined |   1,870           1           0           0           1           1
+---------+--------------------------------------------------------------------
+    diff |                   0           0                       0           0
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =        .
+Ho: diff = 0                                     degrees of freedom =     1868
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) =      .         Pr(|T| > |t|) =      .          Pr(T > t) =      .
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     738           0           0           0           0           0
+       1 |   1,132           0           0           0           0           0
+---------+--------------------------------------------------------------------
+combined |   1,870           0           0           0           0           0
+---------+--------------------------------------------------------------------
+    diff |                   0           0                       0           0
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =        .
+Ho: diff = 0                                     degrees of freedom =     1868
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) =      .         Pr(|T| > |t|) =      .          Pr(T > t) =      .
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     738           0           0           0           0           0
+       1 |   1,132           0           0           0           0           0
+---------+--------------------------------------------------------------------
+combined |   1,870           0           0           0           0           0
+---------+--------------------------------------------------------------------
+    diff |                   0           0                       0           0
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =        .
+Ho: diff = 0                                     degrees of freedom =     1868
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) =      .         Pr(|T| > |t|) =      .          Pr(T > t) =      .
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103     .407767    .0486578    .4938225    .3112545    .5042795
+       1 |     239    .4016736    .0317773    .4912654    .3390729    .4642744
+---------+--------------------------------------------------------------------
+combined |     342    .4035088    .0265675    .4913199    .3512519    .4557657
+---------+--------------------------------------------------------------------
+    diff |            .0060934     .057995               -.1079808    .1201675
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.1051
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.5418         Pr(|T| > |t|) = 0.9164          Pr(T > t) = 0.4582
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103    9.805825    .1179318    1.196877    9.571908    10.03974
+       1 |     239    10.75732    .0806435    1.246718    10.59846    10.91619
+---------+--------------------------------------------------------------------
+combined |     342    10.47076    .0705952    1.305535     10.3319    10.60962
+---------+--------------------------------------------------------------------
+    diff |           -.9514969    .1452106               -1.237121   -.6658727
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -6.5525
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103    .1262136    .0328818    .3337139    .0609927    .1914345
+       1 |     239     .125523    .0214757    .3320063    .0832163    .1678298
+---------+--------------------------------------------------------------------
+combined |     342     .125731    .0179542    .3320317     .090416     .161046
+---------+--------------------------------------------------------------------
+    diff |            .0006906    .0391934               -.0764014    .0777826
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.0176
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.5070         Pr(|T| > |t|) = 0.9860          Pr(T > t) = 0.4930
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103     .223301    .0412355    .4184949    .1415105    .3050915
+       1 |     239    .2970711    .0296208    .4579271    .2387186    .3554236
+---------+--------------------------------------------------------------------
+combined |     342    .2748538    .0241761    .4470947    .2273007    .3224069
+---------+--------------------------------------------------------------------
+    diff |           -.0737702    .0526237               -.1772791    .0297388
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.4018
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0809         Pr(|T| > |t|) = 0.1619          Pr(T > t) = 0.9191
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103    3194.922    285.2782    2895.257    2629.074     3760.77
+       1 |     239    4666.998    289.3777    4473.671     4096.93    5237.067
+---------+--------------------------------------------------------------------
+combined |     342    4223.654    222.5144    4115.013     3785.98    4661.327
+---------+--------------------------------------------------------------------
+    diff |           -1472.076     479.135               -2414.518    -529.634
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -3.0724
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0011         Pr(|T| > |t|) = 0.0023          Pr(T > t) = 0.9989
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar haschld hgc evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1 & black==1, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     738    18.45703    .0784014    2.129863    18.30312    18.61095
+       1 |   1,132    18.97837    .0660807    2.223299    18.84872    19.10803
+---------+--------------------------------------------------------------------
+combined |   1,870    18.77263    .0509009    2.201135     18.6728    18.87245
+---------+--------------------------------------------------------------------
+    diff |            -.521342    .1034667               -.7242646   -.3184195
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.0387
+Ho: diff = 0                                     degrees of freedom =     1868
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     738    .0460705    .0077221    .2097799    .0309105    .0612304
+       1 |   1,132    .0432862    .0060511    .2035906    .0314136    .0551589
+---------+--------------------------------------------------------------------
+combined |   1,870     .044385    .0047638    .2060041    .0350421     .053728
+---------+--------------------------------------------------------------------
+    diff |            .0027842    .0097488               -.0163355     .021904
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.2856
+Ho: diff = 0                                     degrees of freedom =     1868
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6124         Pr(|T| > |t|) = 0.7752          Pr(T > t) = 0.3876
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103     .407767    .0486578    .4938225    .3112545    .5042795
+       1 |     239    .4016736    .0317773    .4912654    .3390729    .4642744
+---------+--------------------------------------------------------------------
+combined |     342    .4035088    .0265675    .4913199    .3512519    .4557657
+---------+--------------------------------------------------------------------
+    diff |            .0060934     .057995               -.1079808    .1201675
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.1051
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.5418         Pr(|T| > |t|) = 0.9164          Pr(T > t) = 0.4582
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103    9.805825    .1179318    1.196877    9.571908    10.03974
+       1 |     239    10.75732    .0806435    1.246718    10.59846    10.91619
+---------+--------------------------------------------------------------------
+combined |     342    10.47076    .0705952    1.305535     10.3319    10.60962
+---------+--------------------------------------------------------------------
+    diff |           -.9514969    .1452106               -1.237121   -.6658727
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -6.5525
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103    .1262136    .0328818    .3337139    .0609927    .1914345
+       1 |     239     .125523    .0214757    .3320063    .0832163    .1678298
+---------+--------------------------------------------------------------------
+combined |     342     .125731    .0179542    .3320317     .090416     .161046
+---------+--------------------------------------------------------------------
+    diff |            .0006906    .0391934               -.0764014    .0777826
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.0176
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.5070         Pr(|T| > |t|) = 0.9860          Pr(T > t) = 0.4930
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103     .223301    .0412355    .4184949    .1415105    .3050915
+       1 |     239    .2970711    .0296208    .4579271    .2387186    .3554236
+---------+--------------------------------------------------------------------
+combined |     342    .2748538    .0241761    .4470947    .2273007    .3224069
+---------+--------------------------------------------------------------------
+    diff |           -.0737702    .0526237               -.1772791    .0297388
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.4018
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0809         Pr(|T| > |t|) = 0.1619          Pr(T > t) = 0.9191
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     103    3194.922    285.2782    2895.257    2629.074     3760.77
+       1 |     239    4666.998    289.3777    4473.671     4096.93    5237.067
+---------+--------------------------------------------------------------------
+combined |     342    4223.654    222.5144    4115.013     3785.98    4661.327
+---------+--------------------------------------------------------------------
+    diff |           -1472.076     479.135               -2414.518    -529.634
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -3.0724
+Ho: diff = 0                                     degrees of freedom =      340
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0011         Pr(|T| > |t|) = 0.0023          Pr(T > t) = 0.9989
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar haschld hgc evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1 & white==1, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     219    18.30667    .1293453    1.914136    18.05174    18.56159
+       1 |     435     18.5863    .0966092    2.014944    18.39642    18.77618
+---------+--------------------------------------------------------------------
+combined |     654    18.49266    .0776075     1.98469    18.34027    18.64505
+---------+--------------------------------------------------------------------
+    diff |           -.2796322    .1642041               -.6020649    .0428005
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.7030
+Ho: diff = 0                                     degrees of freedom =      652
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0445         Pr(|T| > |t|) = 0.0891          Pr(T > t) = 0.9555
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     219    .1141553    .0215377    .3187283    .0717066    .1566039
+       1 |     435    .0850575    .0133909    .2792884    .0587385    .1113765
+---------+--------------------------------------------------------------------
+combined |     654    .0948012    .0114636    .2931644    .0722912    .1173113
+---------+--------------------------------------------------------------------
+    diff |            .0290978    .0242822                -.018583    .0767786
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.1983
+Ho: diff = 0                                     degrees of freedom =      652
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.8844         Pr(|T| > |t|) = 0.2312          Pr(T > t) = 0.1156
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      49    .2857143    .0652051    .4564355    .1546107    .4168179
+       1 |     138    .1086957    .0265925    .3123909    .0561109    .1612804
+---------+--------------------------------------------------------------------
+combined |     187    .1550802    .0265417    .3629529    .1027187    .2074418
+---------+--------------------------------------------------------------------
+    diff |            .1770186    .0591048                .0604126    .2936247
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.9950
+Ho: diff = 0                                     degrees of freedom =      185
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9984         Pr(|T| > |t|) = 0.0031          Pr(T > t) = 0.0016
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      49    9.693878    .1778655    1.245058    9.336255     10.0515
+       1 |     138    10.50725    .1260716    1.481006    10.25795    10.75654
+---------+--------------------------------------------------------------------
+combined |     187    10.29412    .1070812    1.464313    10.08287    10.50537
+---------+--------------------------------------------------------------------
+    diff |           -.8133688    .2367313               -1.280409   -.3463288
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -3.4358
+Ho: diff = 0                                     degrees of freedom =      185
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0004         Pr(|T| > |t|) = 0.0007          Pr(T > t) = 0.9996
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      49    .3265306    .0676862    .4738035    .1904383    .4626229
+       1 |     138    .2101449    .0348075    .4088956    .1413155    .2789744
+---------+--------------------------------------------------------------------
+combined |     187    .2406417    .0313439    .4286207    .1788066    .3024769
+---------+--------------------------------------------------------------------
+    diff |            .1163857    .0709564               -.0236021    .2563735
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.6402
+Ho: diff = 0                                     degrees of freedom =      185
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9487         Pr(|T| > |t|) = 0.1027          Pr(T > t) = 0.0513
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      49    .2653061    .0637245    .4460713    .1371795    .3934328
+       1 |     138    .4202899    .0421716    .4954036    .3368985    .5036812
+---------+--------------------------------------------------------------------
+combined |     187    .3796791    .0355844    .4866098    .3094782    .4498801
+---------+--------------------------------------------------------------------
+    diff |           -.1549837    .0803359                -.313476    .0035085
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.9292
+Ho: diff = 0                                     degrees of freedom =      185
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0276         Pr(|T| > |t|) = 0.0552          Pr(T > t) = 0.9724
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      49    4743.497    1216.091    8512.636    2298.383    7188.612
+       1 |     138    4342.675    311.0683    3654.225    3727.559    4957.791
+---------+--------------------------------------------------------------------
+combined |     187    4447.704    390.8541    5344.849    3676.627     5218.78
+---------+--------------------------------------------------------------------
+    diff |            400.8222    890.7415               -1356.495    2158.139
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.4500
+Ho: diff = 0                                     degrees of freedom =      185
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6734         Pr(|T| > |t|) = 0.6532          Pr(T > t) = 0.3266
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar haschld hgc evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1 & white==1|race_eth==1, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     338    18.43743     .107529    1.976896    18.22591    18.64894
+       1 |     720    18.67249    .0753871    2.022847    18.52448    18.82049
+---------+--------------------------------------------------------------------
+combined |   1,058    18.59739    .0618054     2.01034    18.47612    18.71867
+---------+--------------------------------------------------------------------
+    diff |           -.2350601    .1324177               -.4948919    .0247717
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.7751
+Ho: diff = 0                                     degrees of freedom =     1056
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0381         Pr(|T| > |t|) = 0.0762          Pr(T > t) = 0.9619
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     338    .0976331    .0161687     .297258    .0658288    .1294374
+       1 |     720    .0708333    .0095676    .2567246    .0520496     .089617
+---------+--------------------------------------------------------------------
+combined |   1,058    .0793951    .0083156    .2704823     .063078    .0957121
+---------+--------------------------------------------------------------------
+    diff |            .0267998    .0178237               -.0081741    .0617737
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.5036
+Ho: diff = 0                                     degrees of freedom =     1056
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9335         Pr(|T| > |t|) = 0.1330          Pr(T > t) = 0.0665
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168        .125    .0255918    .3317076    .0744749    .1755251
+       1 |     423     .070922    .0124957    .2569984    .0463604    .0954835
+---------+--------------------------------------------------------------------
+combined |     591    .0862944    .0115603    .2810362    .0635901    .1089987
+---------+--------------------------------------------------------------------
+    diff |             .054078    .0255538                .0038905    .1042656
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.1162
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9826         Pr(|T| > |t|) = 0.0347          Pr(T > t) = 0.0174
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168         9.5    .1084536     1.40572    9.285883    9.714117
+       1 |     423     10.2766    .0699984    1.439654    10.13901    10.41418
+---------+--------------------------------------------------------------------
+combined |     591    10.05584    .0605205    1.471283    9.936976     10.1747
+---------+--------------------------------------------------------------------
+    diff |           -.7765957    .1304186               -1.032738   -.5204536
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.9546
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168    .4047619    .0379828    .4923133    .3297736    .4797502
+       1 |     423    .3167849    .0226467    .4657736    .2722705    .3612992
+---------+--------------------------------------------------------------------
+combined |     591    .3417936    .0195271    .4747126    .3034426    .3801446
+---------+--------------------------------------------------------------------
+    diff |             .087977     .043176                .0031793    .1727747
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.0376
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9790         Pr(|T| > |t|) = 0.0420          Pr(T > t) = 0.0210
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168    .2797619    .0347355    .4502241    .2111845    .3483393
+       1 |     423    .3593381    .0233566    .4803746    .3134283    .4052478
+---------+--------------------------------------------------------------------
+combined |     591    .3367174    .0194561    .4729877    .2985058    .3749291
+---------+--------------------------------------------------------------------
+    diff |           -.0795762    .0430458               -.1641181    .0049658
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.8486
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0325         Pr(|T| > |t|) = 0.0650          Pr(T > t) = 0.9675
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168    6394.068    569.6191    7383.107    5269.486     7518.65
+       1 |     423    5281.678    233.6627    4805.732     4822.39    5740.965
+---------+--------------------------------------------------------------------
+combined |     591     5597.89    233.4187    5674.523    5139.458    6056.323
+---------+--------------------------------------------------------------------
+    diff |             1112.39    515.8925                99.17751    2125.603
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.1562
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9843         Pr(|T| > |t|) = 0.0315          Pr(T > t) = 0.0157
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar haschld hgc evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1 & black==1|race_eth==2, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     873    18.47333    .0712312    2.104638    18.33353    18.61314
+       1 |   1,383    19.01123    .0591194    2.198574    18.89526     19.1272
+---------+--------------------------------------------------------------------
+combined |   2,256    18.80308    .0458564    2.178058    18.71316    18.89301
+---------+--------------------------------------------------------------------
+    diff |           -.5378959     .093487               -.7212254   -.3545663
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.7537
+Ho: diff = 0                                     degrees of freedom =     2254
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     873     .045819    .0070808    .2092123    .0319217    .0597163
+       1 |   1,383    .0419378    .0053919    .2005196    .0313605    .0525151
+---------+--------------------------------------------------------------------
+combined |   2,256    .0434397    .0042927      .20389    .0350217    .0518577
+---------+--------------------------------------------------------------------
+    diff |            .0038812    .0088151               -.0134053    .0211677
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.4403
+Ho: diff = 0                                     degrees of freedom =     2254
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6701         Pr(|T| > |t|) = 0.6598          Pr(T > t) = 0.3299
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     238    .2563025    .0283596    .4375109    .2004334    .3121717
+       1 |     490    .2653061    .0199651    .4419473    .2260781    .3045342
+---------+--------------------------------------------------------------------
+combined |     728    .2623626    .0163157    .4402212    .2303312    .2943941
+---------+--------------------------------------------------------------------
+    diff |           -.0090036     .034804               -.0773321    .0593249
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -0.2587
+Ho: diff = 0                                     degrees of freedom =      726
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.3980         Pr(|T| > |t|) = 0.7959          Pr(T > t) = 0.6020
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     238    9.731092    .0722926    1.115275    9.588674    9.873511
+       1 |     490    10.63878    .0570209    1.262211    10.52674    10.75081
+---------+--------------------------------------------------------------------
+combined |     728    10.34203    .0477321    1.287883    10.24832    10.43574
+---------+--------------------------------------------------------------------
+    diff |           -.9076831    .0960911               -1.096333   -.7190334
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -9.4461
+Ho: diff = 0                                     degrees of freedom =      726
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     238    .3445378    .0308687    .4762188    .2837258    .4053499
+       1 |     490    .2265306    .0189291    .4190141    .1893382    .2637231
+---------+--------------------------------------------------------------------
+combined |     728    .2651099    .0163703    .4416952    .2329712    .2972486
+---------+--------------------------------------------------------------------
+    diff |            .1180072    .0346464                .0499881    .1860263
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   3.4060
+Ho: diff = 0                                     degrees of freedom =      726
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9997         Pr(|T| > |t|) = 0.0007          Pr(T > t) = 0.0003
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     238    .2226891    .0270254    .4169281    .1694483    .2759298
+       1 |     490          .3    .0207231    .4587259    .2592826    .3407174
+---------+--------------------------------------------------------------------
+combined |     728    .2747253    .0165552    .4466826    .2422236    .3072269
+---------+--------------------------------------------------------------------
+    diff |           -.0773109    .0351997               -.1464163   -.0082056
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.1964
+Ho: diff = 0                                     degrees of freedom =      726
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0142         Pr(|T| > |t|) = 0.0284          Pr(T > t) = 0.9858
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     238    3595.599    257.3478    3970.169    3088.618    4102.581
+       1 |     490     4907.67    219.6481    4862.117      4476.1    5339.241
+---------+--------------------------------------------------------------------
+combined |     728    4478.724    171.5268    4628.046    4141.977    4815.471
+---------+--------------------------------------------------------------------
+    diff |           -1312.071    362.6566               -2024.052   -600.0901
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -3.6179
+Ho: diff = 0                                     degrees of freedom =      726
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0002         Pr(|T| > |t|) = 0.0003          Pr(T > t) = 0.9998
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar haschld hgc evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1 & white==1|race_eth==1, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     338    18.43743     .107529    1.976896    18.22591    18.64894
+       1 |     720    18.67249    .0753871    2.022847    18.52448    18.82049
+---------+--------------------------------------------------------------------
+combined |   1,058    18.59739    .0618054     2.01034    18.47612    18.71867
+---------+--------------------------------------------------------------------
+    diff |           -.2350601    .1324177               -.4948919    .0247717
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.7751
+Ho: diff = 0                                     degrees of freedom =     1056
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0381         Pr(|T| > |t|) = 0.0762          Pr(T > t) = 0.9619
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     338    .0976331    .0161687     .297258    .0658288    .1294374
+       1 |     720    .0708333    .0095676    .2567246    .0520496     .089617
+---------+--------------------------------------------------------------------
+combined |   1,058    .0793951    .0083156    .2704823     .063078    .0957121
+---------+--------------------------------------------------------------------
+    diff |            .0267998    .0178237               -.0081741    .0617737
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.5036
+Ho: diff = 0                                     degrees of freedom =     1056
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9335         Pr(|T| > |t|) = 0.1330          Pr(T > t) = 0.0665
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168        .125    .0255918    .3317076    .0744749    .1755251
+       1 |     423     .070922    .0124957    .2569984    .0463604    .0954835
+---------+--------------------------------------------------------------------
+combined |     591    .0862944    .0115603    .2810362    .0635901    .1089987
+---------+--------------------------------------------------------------------
+    diff |             .054078    .0255538                .0038905    .1042656
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.1162
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9826         Pr(|T| > |t|) = 0.0347          Pr(T > t) = 0.0174
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168         9.5    .1084536     1.40572    9.285883    9.714117
+       1 |     423     10.2766    .0699984    1.439654    10.13901    10.41418
+---------+--------------------------------------------------------------------
+combined |     591    10.05584    .0605205    1.471283    9.936976     10.1747
+---------+--------------------------------------------------------------------
+    diff |           -.7765957    .1304186               -1.032738   -.5204536
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -5.9546
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 1.0000
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168    .4047619    .0379828    .4923133    .3297736    .4797502
+       1 |     423    .3167849    .0226467    .4657736    .2722705    .3612992
+---------+--------------------------------------------------------------------
+combined |     591    .3417936    .0195271    .4747126    .3034426    .3801446
+---------+--------------------------------------------------------------------
+    diff |             .087977     .043176                .0031793    .1727747
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.0376
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9790         Pr(|T| > |t|) = 0.0420          Pr(T > t) = 0.0210
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168    .2797619    .0347355    .4502241    .2111845    .3483393
+       1 |     423    .3593381    .0233566    .4803746    .3134283    .4052478
+---------+--------------------------------------------------------------------
+combined |     591    .3367174    .0194561    .4729877    .2985058    .3749291
+---------+--------------------------------------------------------------------
+    diff |           -.0795762    .0430458               -.1641181    .0049658
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.8486
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0325         Pr(|T| > |t|) = 0.0650          Pr(T > t) = 0.9675
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     168    6394.068    569.6191    7383.107    5269.486     7518.65
+       1 |     423    5281.678    233.6627    4805.732     4822.39    5740.965
+---------+--------------------------------------------------------------------
+combined |     591     5597.89    233.4187    5674.523    5139.458    6056.323
+---------+--------------------------------------------------------------------
+    diff |             1112.39    515.8925                99.17751    2125.603
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   2.1562
+Ho: diff = 0                                     degrees of freedom =      589
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9843         Pr(|T| > |t|) = 0.0315          Pr(T > t) = 0.0157
+
+. 
+end of do-file
+
+. do "C:\Users\John\AppData\Local\Temp\STD2c18_000000.tmp"
+
+. clear
+
+. 
+. use "C:\Users\John\Desktop\Dempsey Master\DempseyData"
+
+. qui destring, replace
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\JC_data_Maria_8020", gen(mergeMaria)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         6,899
+        from master                       563  (mergeMaria==1)
+        from using                      6,336  (mergeMaria==2)
+
+    matched                             1,684  (mergeMaria==3)
+    -----------------------------------------
+
+. merge 1:1 mprid using "C:\Users\John\Desktop\Dempsey Master\Fertility\impact", gen(mergekid)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,730
+        from master                         0  (mergekid==1)
+        from using                      2,730  (mergekid==2)
+
+    matched                             8,583  (mergekid==3)
+    -----------------------------------------
+
+. 
+. glo list age mar haschld hgc evarr currjob earn_yr
+
+. 
+. foreach x of global list{
+  2. ttest `x' if female==1 & hispanic==1|race_eth==3, by(d_hsged_voc )
+  3. 
+. }
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     326     18.5761    .1129241    2.038897    18.35395    18.79826
+       1 |     494    18.99543    .0988294    2.196593    18.80125     19.1896
+---------+--------------------------------------------------------------------
+combined |     820    18.82872    .0748677    2.143886    18.68176    18.97567
+---------+--------------------------------------------------------------------
+    diff |           -.4193209    .1523703               -.7184037    -.120238
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -2.7520
+Ho: diff = 0                                     degrees of freedom =      818
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0030         Pr(|T| > |t|) = 0.0061          Pr(T > t) = 0.9970
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |     326    .1656442    .0206216    .3723324    .1250755    .2062128
+       1 |     494    .0951417    .0132145     .293708    .0691779    .1211055
+---------+--------------------------------------------------------------------
+combined |     820    .1231707    .0114834    .3288337    .1006304     .145711
+---------+--------------------------------------------------------------------
+    diff |            .0705025    .0233491                .0246714    .1163336
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   3.0195
+Ho: diff = 0                                     degrees of freedom =      818
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.9987         Pr(|T| > |t|) = 0.0026          Pr(T > t) = 0.0013
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      86     .244186     .046597    .4321233    .1515386    .3368335
+       1 |     176    .2215909     .031395    .4165021    .1596293    .2835525
+---------+--------------------------------------------------------------------
+combined |     262    .2290076    .0260094    .4209984    .1777927    .2802225
+---------+--------------------------------------------------------------------
+    diff |            .0225951     .055478               -.0866482    .1318385
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.4073
+Ho: diff = 0                                     degrees of freedom =      260
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.6579         Pr(|T| > |t|) = 0.6841          Pr(T > t) = 0.3421
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      86    9.837209    .1431141    1.327186     9.55266    10.12176
+       1 |     176    10.23295    .1335637    1.771922    9.969352    10.49656
+---------+--------------------------------------------------------------------
+combined |     262    10.10305    .1017683    1.647264    9.902662    10.30344
+---------+--------------------------------------------------------------------
+    diff |           -.3957452    .2157495                -.820584    .0290935
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.8343
+Ho: diff = 0                                     degrees of freedom =      260
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0339         Pr(|T| > |t|) = 0.0678          Pr(T > t) = 0.9661
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      86    .3255814    .0508259      .47134    .2245259    .4266369
+       1 |     175    .2514286    .0328889    .4350792     .186516    .3163411
+---------+--------------------------------------------------------------------
+combined |     261    .2758621    .0277185    .4478063    .2212807    .3304434
+---------+--------------------------------------------------------------------
+    diff |            .0741528    .0589053               -.0418415    .1901471
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   1.2588
+Ho: diff = 0                                     degrees of freedom =      259
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.8954         Pr(|T| > |t|) = 0.2092          Pr(T > t) = 0.1046
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      86    .3372093    .0512777    .4755298    .2352555    .4391631
+       1 |     176    .3295455    .0355323    .4713892    .2594185    .3996724
+---------+--------------------------------------------------------------------
+combined |     262    .3320611    .0291512    .4718541    .2746595    .3894626
+---------+--------------------------------------------------------------------
+    diff |            .0076638    .0621976               -.1148113     .130139
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =   0.1232
+Ho: diff = 0                                     degrees of freedom =      260
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.5490         Pr(|T| > |t|) = 0.9020          Pr(T > t) = 0.4510
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      86    4768.967    456.0026    4228.794    3862.311    5675.622
+       1 |     176     5568.25    362.8752    4814.083    4852.075    6284.425
+---------+--------------------------------------------------------------------
+combined |     262     5305.89    286.4919    4637.277     4741.76     5870.02
+---------+--------------------------------------------------------------------
+    diff |           -799.2834     609.269               -1999.013    400.4464
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -1.3119
+Ho: diff = 0                                     degrees of freedom =      260
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.0954         Pr(|T| > |t|) = 0.1907          Pr(T > t) = 0.9046
+
+. 
+end of do-file
+
+. exit, clear
